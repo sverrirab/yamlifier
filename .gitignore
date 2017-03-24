@@ -12,3 +12,5 @@ dist/
 *.old
 idea/
 
+# test output files
+generated.yaml

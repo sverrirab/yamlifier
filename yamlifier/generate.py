@@ -6,6 +6,7 @@ import argparse
 import functools
 import os
 import re
+import sys
 import tarfile
 import tempfile
 
@@ -21,15 +22,29 @@ ERR_FILE_TOO_LARGE = 3
 LOCAL_CONTENT_PATH = "local-content-path"
 LOCAL_CONTENT_TAR_PATH = "local-content-tar-path"
 
+PY3 = sys.version_info > (3,)
 VERBOSE = 0
 
 
 def read_file(path):
     if os.path.exists(path):
-        with open(path, "r") as f:
+        with open(path, "rb") as f:
             return f.read(), ERR_SUCCESS
     print("File", path, "not found")
     return "", ERR_NOT_FOUND
+
+
+def is_ascii(content):
+    if PY3:
+        for c in content:
+            if c >= 128:
+                return False
+    else:
+        for c in content:
+            if ord(c) >= 128:
+                return False
+
+    return True
 
 
 # Function that fixes file permissions in a tar.
@@ -50,7 +65,7 @@ def tarinfo_filter(owner, permissions, tarinfo):
     return tarinfo
 
 
-def main(args, subst):
+def generate(args, subst):
     template, err = read_file(args.template)
     if err:
         return err
@@ -64,7 +79,11 @@ def main(args, subst):
                 return err
 
             del f[LOCAL_CONTENT_PATH]
-            f["content"] = ruamel.yaml.scalarstring.PreservedScalarString(content)
+            if is_ascii(content):
+                content = content.decode('ascii')
+                f["content"] = ruamel.yaml.scalarstring.PreservedScalarString(content)
+            else:
+                f["content"] = content
 
         elif LOCAL_CONTENT_TAR_PATH in f:
             owner = f.get("owner", "")
@@ -109,16 +128,16 @@ def main(args, subst):
     return ERR_SUCCESS
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser("Generate cloud-config.yaml")
+def main():
+    parser = argparse.ArgumentParser("Generate yaml file from template")
 
     parser.add_argument("-v", "--verbose", action="count", default=0,
                         help="Increase output verbosity")
     parser.add_argument("-c", "--content-root", default=".",
                         help="Root folder for local-content-path files")
-    parser.add_argument("-t", "--template", default="cloud-config-template.yaml",
+    parser.add_argument("-t", "--template", default="template.yaml",
                         help="Template file to read")
-    parser.add_argument("-o", "--output", default="cloud-config.yaml",
+    parser.add_argument("-o", "--output", default="generated.yaml",
                         help="Output file to write to")
     parser.add_argument("-f", "--force", default=False, action="store_true",
                         help="Overwrite output file even if exists")
@@ -143,4 +162,8 @@ if __name__ == "__main__":
         for k in sorted(subst.keys()):
             print("substituting {}=\"{}\"".format(k, subst[k]))
 
-    exit(main(parsed_args, subst))
+    return generate(parsed_args, subst)
+
+
+if __name__ == "__main__":
+    exit(main())

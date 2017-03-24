@@ -9,21 +9,33 @@ This allows you to edit files and track in source control and wrap them in yaml 
 Supports compression to minimize yaml size (perfect to squeeze into startup scripts for AWS/EC2 instances).
 
 .. image:: logo.png
+    :width: 200px
+    :align: center
     :alt: File graphic by href="http://www.flaticon.com/authors/freepik - made by http://logomakr.com
 
-Installation
-------------
+Getting started
+---------------
 
 .. code:: bash
 
     pip install yamlifier
+
+    cd testdata
+
+    yamlifier VARIABLE1="funny person"
+
+
+Check out the generated.yaml file in the local folder.
+Use -f to overwrite excisting file and --help for more information.
 
 
 Template Syntax
 ---------------
 
 TODO
+
 .. code:: yaml
+
     # comment that is preserved
 
     #@ Comments that start with #@ are removed from the output
@@ -31,6 +43,7 @@ TODO
     #@ You can optionally replace something in the yaml file
     stuff: @@STUFF@@
     script:
+
 
 Quickstart
 ----------
@@ -48,14 +61,23 @@ Check out the git repository and from the yamlifier folder:
 
 .. code:: bash
 
-    docker
+    docker build -t yamlifier2 -f docker/python2.Dockerfile .
 
-File graphic by <a href="http://www.flaticon.com/authors/freepik">Freepik</a> from <a href="http://www.flaticon.com/">Flaticon</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>. Made with <a href="http://logomakr.com" title="Logo Maker">Logo Maker</a>
+    docker run -it -v $PWD:/code yamlifier2 bash
+
 
 Credits
 -------
 
-Logo
+Based on the excellent `ruamel.yaml`_ library that allows manipulating yaml files while preserving comments and order.
+
+.. _ruamel.yaml: https://pypi.python.org/pypi/ruamel.yaml
+
+Logo created with `logomakr.com`_ (image CC BY 3.0 license).
+
+.. _logomakr.com: http://logomakr.com
+
+
 Background
 ----------
 This was created by `Greenqloud`_ when developing `Qstack`_.

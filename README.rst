@@ -32,26 +32,32 @@ Use -f to overwrite excisting file and --help for more information.
 Template Syntax
 ---------------
 
-TODO
-
 .. code:: yaml
 
-    # comment that is preserved
+    #cloud-config
+    #@ Comments like this will be removed from the generated file.
+    runcmd:
+      - [ /example/install.sh ]
 
-    #@ Comments that start with #@ are removed from the output
+    write_files:
+      #@ 'local-content-path' will be replaced with content of local file.
+      - path: /example/install.sh
+        permissions: "0755"
+        owner: "root"
+        local-content-path: example_files/install.sh
 
-    #@ You can optionally replace something in the yaml file
-    stuff: @@STUFF@@
-    script:
+      #@ Embed binary file as an example (could be an executable)
+      - path: /example/small_logo.png
+        permissions: "644"
+        owner: "root"
+        local-content-path: example_files/small_logo.png
 
-
-Quickstart
-----------
-See example folder...
-
-.. code:: bash
-
-    yamlifier example.template
+      #@ Embed archive with multiple small files
+      #@ 'local-content-tar-path' will be replaced with an embedded archive with all files in folder.
+      - path: /example/archive.tgz
+        permissions: "644"
+        owner: "root"
+        local-content-tar-path: example_files/subfolder
 
 
 Building & Testing using Docker

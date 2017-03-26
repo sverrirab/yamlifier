@@ -1,14 +1,14 @@
 yamlifier
 ==============
 
-Utility to create yaml files from a template. Perfect for cloud-config or cloud-init creation.
+Create a yaml file from a template and automatically embed local files.
 
-Create a yaml file from a template and local files.
+Create builds for your cloud-init / cloud-config templates with ease!
 
 This allows you to edit files and track in source control and wrap them in yaml files when needed.
 Supports compression to minimize yaml size (perfect to squeeze into startup scripts for AWS/EC2 instances).
 
-.. image:: logo.png
+.. image:: https://github.com/greenqloud/yamlifier/raw/master/logo.png
     :width: 200px
     :align: center
     :alt: File graphic by href="http://www.flaticon.com/authors/freepik - made by http://logomakr.com
@@ -26,7 +26,7 @@ Getting started
 
 
 Check out the generated.yaml file in the local folder.
-Use -f to overwrite excisting file and --help for more information.
+Use -f to overwrite existing file and --help for more information.
 
 
 Template Syntax
@@ -82,6 +82,15 @@ Based on the excellent `ruamel.yaml`_ library that allows manipulating yaml file
 Logo created with `logomakr.com`_ (image CC BY 3.0 license).
 
 .. _logomakr.com: http://logomakr.com
+
+
+Source code and feedback
+------------------------
+
+Fully open sourced with `Apache License`_ on `github.com/greenqloud/yamlifier`_ including issue tracking.
+
+.. _Apache License: https://github.com/greenqloud/yamlifier/blob/master/LICENSE.rst
+.. _github.com/greenqloud/yamlifier: https://github.com/greenqloud/yamlifier
 
 
 Background

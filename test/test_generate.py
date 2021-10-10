@@ -26,9 +26,13 @@ class TestYamlifier(unittest.TestCase):
             large=False
         )
 
-        output = yamlifier.read_file(OUTPUT)
-        correct = yamlifier.read_file(OUTPUT_CORRECT)
+        output, output_error = yamlifier.read_file(OUTPUT)
+        correct, correct_error = yamlifier.read_file(OUTPUT_CORRECT)
 
         # tar archive compresses files in different order so output
         # is not binary equivalent.
+        self.assertEqual(correct_error, output_error)
         self.assertEqual(len(correct), len(output))
+
+if __name__ == '__main__':
+    unittest.main()

@@ -1,18 +1,16 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-
 import argparse
 import functools
+import io
 import logging
 import os
 import re
-import sys
 import tarfile
 import tempfile
 
-import ruamel.yaml
-
+from ruamel.yaml import YAML
+from ruamel.yaml.scalarstring import LiteralScalarString
 
 MAX_OUTPUT_SIZE = 24 * 1024
 
@@ -24,14 +22,12 @@ ERR_FILE_TOO_LARGE = 3
 LOCAL_CONTENT_PATH = "local-content-path"
 LOCAL_CONTENT_TAR_PATH = "local-content-tar-path"
 
-PY3 = sys.version_info > (3,)
-
 
 def read_file(path):
     """
     Read all content of file.
     :param path: path to file
-    :return: content of file
+    :return: content of file, error code
     """
     if os.path.exists(path):
         with open(path, "rb") as f:
@@ -41,15 +37,9 @@ def read_file(path):
 
 
 def is_ascii(content):
-    if PY3:
-        for c in content:
-            if c >= 128:
-                return False
-    else:
-        for c in content:
-            if ord(c) >= 128:
-                return False
-
+    for c in content:
+        if c >= 128:
+            return False
     return True
 
 
@@ -86,7 +76,9 @@ def generate(template, output, content_root, subst, force=False, large=False):
     if err:
         return err
 
-    code = ruamel.yaml.load(template_content, ruamel.yaml.RoundTripLoader)
+    yaml = YAML()
+    code = yaml.load(template_content)
+    
     for f in code.get("write_files"):
         if LOCAL_CONTENT_PATH in f:
             path = os.path.join(content_root, f.get(LOCAL_CONTENT_PATH))
@@ -96,8 +88,7 @@ def generate(template, output, content_root, subst, force=False, large=False):
 
             del f[LOCAL_CONTENT_PATH]
             if is_ascii(content):
-                content = content.decode('ascii')
-                f["content"] = ruamel.yaml.scalarstring.PreservedScalarString(content)
+                f["content"] = LiteralScalarString(content.decode('ascii'))
             else:
                 f["content"] = content
 
@@ -123,7 +114,10 @@ def generate(template, output, content_root, subst, force=False, large=False):
         logging.error("Output file already exists.  Remove or specify --force")
         return ERR_ALREADY_EXISTS
 
-    result = ruamel.yaml.dump(code, Dumper=ruamel.yaml.RoundTripDumper)
+    result_file = io.StringIO()
+    yaml.dump(code, result_file)
+    result_file.seek(0)
+    result = result_file.read()
 
     # Remove comments
     result = re.sub("\s*#@\s.*$", "", result, flags=re.MULTILINE)

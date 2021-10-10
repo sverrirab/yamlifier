@@ -8,7 +8,7 @@ Create builds for your cloud-init / cloud-config templates with ease!
 This allows you to edit files and track in source control and wrap them in yaml files when needed.
 Supports compression to minimize yaml size (perfect to squeeze into startup scripts for AWS/EC2 instances).
 
-.. image:: https://github.com/greenqloud/yamlifier/raw/master/logo.png
+.. image:: https://raw.githubusercontent.com/sverrirab/yamlifier/main/logo.png
     :width: 200px
     :align: center
     :alt: File graphic by href="http://www.flaticon.com/authors/freepik - made by http://logomakr.com
@@ -87,19 +87,7 @@ Logo created with `logomakr.com`_ (image CC BY 3.0 license).
 Source code and feedback
 ------------------------
 
-Fully open sourced with `Apache License`_ on `github.com/greenqloud/yamlifier`_ including issue tracking.
+Fully open sourced with `Apache License`_ on `github.com/sverrirab/yamlifier`_ including issue tracking.
 
-.. _Apache License: https://github.com/greenqloud/yamlifier/blob/master/LICENSE.rst
-.. _github.com/greenqloud/yamlifier: https://github.com/greenqloud/yamlifier
-
-
-Background
-----------
-This was created by `Greenqloud`_ when developing `Qstack`_.
-
-.. _Greenqloud: https://www.greenqloud.com/
-.. _Qstack: https://qstack.com/
-
-Hope you find it useful!
-
-Greenqloud Dev Team.
+.. _Apache License: https://github.com/sverrirab/yamlifier/blob/master/LICENSE.rst
+.. _github.com/sverrirab/yamlifier: https://github.com/sverrirab/yamlifier
